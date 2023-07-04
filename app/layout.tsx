@@ -28,10 +28,10 @@ export const metadata: Metadata = {
     default: 'Elie Hamouche',
     template: '%s | Elie Hamouche',
   },
-  description: 'Developer, writer, and creator.',
+  description: 'Personal website',
   openGraph: {
     title: 'Elie Hamouche',
-    description: 'Developer, writer, and creator.',
+    description: 'Personal website.',
     url: 'https://eliehamouche.com',
     siteName: 'Elie Hamouche',
     locale: 'en-US',
