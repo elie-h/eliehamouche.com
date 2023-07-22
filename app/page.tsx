@@ -30,9 +30,9 @@ export default function Page() {
 
       <section className="prose prose-neutral dark:prose-invert md:text-lg sm:text-base mb-8">
         <p>
-          While my primary focus is Backend Development and Data Engineering, I
-          enjoy diversifying my skills with some Frontend work from time to
-          time.
+          My primary focus and specialisation is Backend Development and Data
+          Engineering, Although I do enjoy working on webapplications and UX
+          from occasionally.
         </p>
       </section>
 
