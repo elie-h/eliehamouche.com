@@ -31,7 +31,7 @@ const links = [
 
 export default function LinksPage() {
   return (
-    <section className="px-4 sm:px-0 text-center">
+    <section className="px-4 sm:px-0 text-center dark:text-white">
       <div>
         <Image
           src={avatar}
@@ -50,7 +50,7 @@ export default function LinksPage() {
           <a
             key={index}
             href={link.url}
-            className="block mb-4 p-4 rounded-lg text-center w-full sm:w-1/2 shadow-lg bg-white border border-gray-200 hover:bg-gray-100 transition-colors"
+            className="block mb-4 p-4 rounded-lg text-center w-full sm:w-1/2 shadow-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           >
             {link.title}
           </a>
