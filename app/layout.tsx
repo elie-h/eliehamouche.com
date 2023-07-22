@@ -5,7 +5,7 @@ import localFont from "next/font/local";
 import Sidebar from "./components/sidebar";
 import { Analytics } from "@vercel/analytics/react";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 const graphik = localFont({
   src: [

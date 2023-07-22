@@ -7,7 +7,7 @@ import Balancer from "react-wrap-balancer";
 // import ViewCounter from '../view-counter';
 // import { getViewsCount } from 'lib/metrics';
 
-export const runtime = "experimental-edge";
+export const runtime = "nodejs"; // edge does not work with contentlayer
 
 export async function generateMetadata({
   params,
