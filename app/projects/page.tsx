@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-// Dummy project data
 const projects = [
   {
     title: "Hyper Proxy",
@@ -31,10 +30,10 @@ export default function Page() {
       {projects.map((project, index) => (
         <div key={index} className="border rounded-lg p-4 mb-4">
           <h2 className="font-semibold text-xl mb-2">
-            <a href={project.url} className="text-blue-500 hover:underline">
+            <Link href={project.url} className="text-blue-500 hover:underline">
               {project.title}
-            </a>
-          </h2>{" "}
+            </Link>
+          </h2>
           <p className="mb-4">{project.description}</p>
           <div className="mt-2">
             {project.technologies.map((tech, index) => (

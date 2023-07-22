@@ -1,7 +1,12 @@
 import Image from "next/image";
 import avatar from "app/avatar.jpg";
+import type { Metadata } from "next";
 
-// Dummy links data
+export const metadata: Metadata = {
+  title: "Blog",
+  description: "Elie Hamouche's socials and links",
+};
+
 const links = [
   {
     title: "GitHub",
