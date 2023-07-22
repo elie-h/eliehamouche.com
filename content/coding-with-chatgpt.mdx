@@ -4,54 +4,88 @@ publishedAt: "2023-07-22"
 summary: "A quick guide on getting the best out of ChatGPT programming"
 ---
 
-Hello fellow prompt engineer.
+Hello fellow prompt engineers, this blog post is a quick guide on how to maximize the benefits of programming with ChatGPT.
 
-```python
-import { writeFileSync } from 'fs';
-import { globby } from 'globby';
-import prettier from 'prettier';
+## Prompting
 
-async function generate() {
-  const prettierConfig = await prettier.resolveConfig('./.prettierrc.js');
-  const pages = await globby([
-    'pages/*.js',
-    'data/**/*.mdx',
-    '!data/*.mdx',
-    '!pages/_*.js',
-    '!pages/api',
-    '!pages/404.js',
-  ]);
+Good prompting is key to getting the best code output from ChatGPT.
+The most effective prompts are short, concise, and crafted in a manner that ChatGPT can easily comprehend.
+ChatGPT tends to be verbose, so well-crafted prompts instruct the model to be more concise and to-the-point.
 
-  const sitemap = `
-    <?xml version="1.0" encoding="UTF-8"?>
-    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-        ${pages
-          .map((page) => {
-            const path = page
-              .replace('pages', '')
-              .replace('data', '')
-              .replace('.js', '')
-              .replace('.mdx', '');
-            const route = path === '/index' ? '' : path;
+## Coding Style
 
-            return `
-              <url>
-                  <loc>${`https://eliehamouche.com${route}`}</loc>
-              </url>
-            `;
-          })
-          .join('')}
-    </urlset>
-    `;
+To get ChatGPT to write code in a specific style, I've found that providing it with a code example in the desired style is most effective.
+I also usually communicate the coding principles that I adhere to, such as DRY (Don't Repeat Yourself) & KISS (Keep It Simple, Stupid),
+and provide specific instructions on when to use libraries.
+This enables ChatGPT to grasp the style of code that I want and remain consistent with my coding approach.
 
-  const formatted = prettier.format(sitemap, {
-    ...prettierConfig,
-    parser: 'html',
-  });
+## Chunking
 
-  // eslint-disable-next-line no-sync
-  writeFileSync('public/sitemap.xml', formatted);
-}
+When prompting code from ChatGPT, it's not advisable to request the entire task to be completed all at once.
+Instead, break the task down into smaller chunks and prompt for each chunk individually.
+This technique helps ChatGPT to concentrate on one task at a time, avoiding confusion.
+It also lets you fine-tune each section of code individually and combine them all at the end.
+I enjoy using TDD (Test Driven Development) with ChatGPT, finding that having tests first ensures the written code passes the tests upon refining.
 
-generate();
+## Code structuring
+
+Developers often organize code into multiple files and folders.
+While this is a great way to organize code, it isn't an ideal way to prompt ChatGPT since it can lose the context of the code.
+I often write the entire code in one file and split it up into multiple files after I've finished writing the code.
+This approach aids rapid code prototyping, followed by organization later.
+
+## Word of warning
+
+ChatGPT is a powerful tool, but it isn't perfect.
+It's essential to remember that it's a tool to assist in writing code, not a tool to write code for you.
+I perceive ChatGPT as a tool to write code more quickly, not necessarily better.
+It's crucial to remember that you are still responsible for the code that you write.
+
+## Starter prompt templates
+
+These prompts serve as a good starting point for writing code with ChatGPT.
+They have proven effective for me, but feel free to modify them to suit your needs.
+I usually have an exchange with ChatGPT between each phase to refine the code it produces;
+I find this helps keep ChatGPT on track and clarifies my thought process.
+
+**1) Task Overview & Acceptance Criteria**
+
+```
+You are an {language} engineer of the highest caliber. You value:
+
+- Readability
+- The DRY principle
+- Modularity
+- Type safety
+- Writing code as opposed to important libraries when possible
+- First principal thinking
+- Keeping things simple
+- Production ready code
+
+Our task is: {task here}.
+
+Do not mention details about your training, limitations or weaknesses, jump straight into the task at hand.
+You start by writing bullet points of the acceptance criteria for this task,
+
+```
+
+**2) Write the tests**
+
+```
+
+Your next task is to write a suite of self contained tests that will test the code that you are about to write.
+Ensure the the tests are tied to the acceptance criteria that you wrote in the previous prompt.
+Use TDD principals and cover any possible edge cases
+
+```
+
+** 3) Write the code**
+
+```
+
+Your next task is to write the code that will pass the tests that you wrote in the previous prompt.
+Ensure that the code is true to the acceptance criteria that you wrote in the first prompt, and that it passes the tests that you wrote in the second prompt.
+Also remember to abide by the coding principals that you value.
+Begin:
+
 ```
