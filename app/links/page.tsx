@@ -19,6 +19,14 @@ const links = [
     title: "Instagram",
     url: "https://instagram.com/elie.hamouche",
   },
+  {
+    title: "Lenster",
+    url: "https://lenster.xyz/u/elieh.lens",
+  },
+  {
+    title: "Discord",
+    url: "https://discord.com/users/eliehamouche",
+  },
 ];
 
 export default function LinksPage() {

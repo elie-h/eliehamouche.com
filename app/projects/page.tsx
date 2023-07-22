@@ -15,6 +15,12 @@ const projects = [
     url: "https://github.com/elie-h/thirdrealm",
     technologies: ["Remix", "Nodejs", "PostgreSQL", "TypeScript"],
   },
+  {
+    title: "eliehamouche.com",
+    description: "Personal website with a blog, projects page and links",
+    url: "https://github.com/elie-h/eliehamouche.com",
+    technologies: ["Nextjs", "Tailwindcss", "TypeScript"],
+  },
 ];
 
 export default function Page() {
