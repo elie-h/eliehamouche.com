@@ -14,7 +14,7 @@ export default async function BlogPage() {
   // const allViews = await getViewsCount();
   return (
     <section>
-      <h1 className="font-bold text-2xl mb-8 tracking-tighter">read my blog</h1>
+      <h1 className="font-bold text-2xl mb-8 tracking-tighter">my blog</h1>
       {allBlogs
         .sort((a, b) => {
           if (new Date(a.publishedAt) > new Date(b.publishedAt)) {
