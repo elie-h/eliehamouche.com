@@ -1,0 +1,151 @@
+---
+title: "Tracking API Usage with Posthog"
+publishedAt: "2023-08-23"
+summary: "Tracking user engagement in API products is different from traditional web apps. Discover how Posthog can help you gain deeper insights into your API's usage"
+---
+
+Tracking user engagement in API products is different from traditional web apps. Discover how Posthog can help you gain deeper insights into your API's usage.
+When your product is an API, especially a SaaS one targeted at developers for B2B purposes, the dynamics of user engagement tracking differ from conventional web applications.
+Unlike web apps, where you can seamlessly integrate tracking scripts into the frontend, API products require a more granular approach.
+
+## The Importance of API Usage Insight
+
+Before we dive into the "how," it's essential to understand the "why." Here are some key questions I'm trying to answer for my API product:
+
+- Which endpoints are used the most?
+- Which endpoints see minimal engagement?
+- Which versions of the API are specific users utilizing?
+- Which authentication methods are prevalent?
+- Are there underutilized features or endpoints that may indicate areas for improvement or even deprecation?
+
+Answering these questions is pivotal for:
+
+- Gaining a deep product insight.
+- Making informed product decisions.
+- Understanding the potential repercussions of introducing changes or deprecating certain functions.
+
+Challenges with Tracking API Products
+Unlike web applications, you cannot simply drop a script into an API. Each endpoint needs to have event tracking integrated, and these events should be tied to specific callers to gather accurate usage analytics.
+Moreover, while there's a wealth of content available on measuring API performance and observability metrics, there's a notable void when it comes to detailed guidelines on usage analytics for API products.
+
+## Enter Posthog
+
+Posthog offers a potential solution. Posthog is an open-source product analytics platform. It offers 3 features that are particularly useful for API products:
+
+- Event Tracking Integration: Add event triggers within your API code. For instance, every time a particular endpoint is accessed, an event can be fired.
+- User Identification: For B2B products, it's beneficial to know which company or user accesses what. Integrate user identification within your events to break down usage statistics by user or organization.
+- Version Tracking: Keep track of the API versions users are on. This can be achieved by adding a version number to the event payload.
+
+They also offer a generous free tier and it can be run locally in docker which I find appealing for local development.
+
+## Integrating Posthog with FastAPI
+
+I'm using FastAPI for my API product, so I'll be using it as an example. However, the same principles apply to any other framework.
+
+### Setup
+
+Setup is fairly easy, install and initialise the Posthog client:
+I like to use a singleton pattern for this, so I create a `posthog.py` file with the following:
+
+```python
+from posthog import Posthog
+from app.core.config import config
+
+posthog = Posthog(project_api_key=config.POSTHOG_API_KEY, host=config.POSTHOG_HOST)
+```
+
+The posthog library by default buggers events before sending them for performance, but this can lead to lost events in serverless environments.
+I tend to keep my services ephemeral and stateless and hosted on autoscaling solutions like CloudRun or Serverless.
+To avoid data loss, you can instruct the posthog client to flush the events after every request using FastAPI's middleware and the flush command:
+
+```python
+from fastapi import FastAPI, Request
+from app.services.analytics import posthog
+
+app = FastAPI()
+
+@app.middleware("http")
+async def flush_sentry(request: Request, call_next):
+    response = await call_next(request)
+    posthog.flush()
+    return response
+```
+
+Now we're ready to use the posthog client to track events.
+
+### Tracking Events
+
+Most APIs can be mapped to a user journey or a series of user journeys. For instance, a user may create an account, then create a project, then create a widget, and so on.
+This is common practice in SRE and DevOps, the user journey is called a "happy path." Tracking the happy path is a good starting point for usage analytics.
+
+For example, let's say we have a user journey that looks like this:
+
+1. **Signs ups**  
+   Endpoint: POST /api/v1/auth/signup  
+   Event: user_signup
+
+```python
+@app.post("/api/v1/auth/signup")
+def login(data: WidgetSchema, current_user=Depends(get_current_user)):
+    # Sign up logic here
+    posthog.capture('sign_up', { 'user_id': current_user.id, 'organisation': current_user.organisation, 'plan': current_user.plan })
+    return {"message": "Sign up successful"}
+```
+
+2. **Logins**  
+   Endpoint: POST /api/v1/auth/login  
+   Event: user_login
+
+```python
+@app.post("/api/v1/auth/login")
+def login(data: LoginSchema, current_user=Depends(get_current_user)):
+    # Login logic here
+    posthog.capture('user_login', { 'user_id': current_user.id, 'organisation': current_user.organisation })
+    return {"message": "Login successful"}
+```
+
+3. **Project creation**  
+   Endpoint: POST /api/v1/projects  
+   Event: project_create
+
+```python
+@app.post("/api/v1/projects")
+def create_project(data: ProjectSchema, current_user=Depends(get_current_user)):
+    # Create project logic here
+    posthog.capture('project_create', { 'user_id': current_user.id, 'organisation': current_user.organisation, 'project_id': project.id })
+    return {"message": "Project created"}
+```
+
+4. **Widget creation**  
+   Endpoint: POST /api/v1/projects/project_id/widgets  
+   Event: widget_create
+
+```python
+@app.post("/api/v1/projects/{project_id}/widgets")
+def create_widget(data: WidgetSchema, current_user=Depends(get_current_user)):
+    # Create widget logic here
+    posthog.capture('widget_create', { 'user_id': current_user.id, 'organisation': current_user.organisation, 'project_id': project.id, 'widget_id': widget.id })
+    return {"message": "Widget created"}
+```
+
+Simple to setup, we've only added a few lines of code to our project, but over time as we add more events, we'll have a wealth of data to analyse.
+For some questions I'm looking to answer are:
+
+- We can see where in the customer journey users are dropping off?
+- Which versions of the API are users on?
+- Are users within the same organisation using different API versions?
+- What's the usage on specific endpoints/features?
+- Are there any underutilised features by a specific organisation that we can educate them on?
+- Are there any underutilised features by all users that we can deprecate?
+
+## Comparison to logging and observability
+
+An argument can be made that this is what logging and observability tools are for. However, I find that logging and observability tools are more suited for debugging and performance monitoring.
+Whereas event tracking and analytics are more suited for product insights, decision making and understanding user behaviour.
+Posthog offers a few additional features that help with analysis, specifically Cohorts which allow you to group users based on their behaviour as measured by events.
+It also ties in nicely with the ability to run feature flags and experiments on future traffic
+
+## Conclusion
+
+You can try posthog out for yourself here: [posthog](https://posthog.com/)  
+Note: I am not affiliated with Posthog; I've just found it helpful and easy to use.
