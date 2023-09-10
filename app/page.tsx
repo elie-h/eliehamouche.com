@@ -51,9 +51,9 @@ export default function Page() {
       <section className="prose prose-neutral dark:prose-invert md:text-lg sm:text-base mb-8">
         <p>
           Want to know more about me and my work? Check out my
-          <a href="/blogs"> blog posts</a> and <a href="/projects">projects</a>.
-          You can also connect with me on{" "}
-          <a href="https://twitter.com/thehamouche">Twitter</a>.
+          <a href="/blog"> blog posts</a> and <a href="/projects">projects</a>.
+          You can also connect with me on my <a href="/links">socials</a> or on
+          my <a href="https://twitter.com/thehamouche">Twitter</a>.
         </p>
       </section>
     </div>
